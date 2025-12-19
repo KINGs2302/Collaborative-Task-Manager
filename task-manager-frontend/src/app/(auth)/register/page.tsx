@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 const registerSchema = z
   .object({
@@ -55,17 +55,10 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       await registerUser(data.name, data.email, data.password);
-      toast({
-        title: 'Success',
-        description: 'Account created',
-      });
-      router.replace('/dashboard');
+      toast.success('Account created successfully');
+      window.location.href = '/dashboard';
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Registration failed',
-        variant: 'destructive',
-      });
+      toast.error(error?.response?.data?.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }
