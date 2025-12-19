@@ -1,41 +1,36 @@
-// src/socket/socket.ts (Backend)
-import { Server as HTTPServer } from 'http';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
+import http from 'http';
 
-let io: Server;
+const allowedOrigins = [
+  process.env.FRONTEND_URL,        
+  process.env.FRONTEND_PROD_URL,   
+].filter(Boolean);
 
-export const initSocket = (server: HTTPServer) => {
-  io = new Server(server, {
+export const initSocket = (server: http.Server) => {
+  const io = new Server(server, {
     cors: {
-      origin: [
-        'http://localhost:3000',
-        'https://collaborative-task-manager-yvd6.vercel.app',
-        process.env.FRONTEND_URL,
-        process.env.FRONTEND_PROD_URL
-      ].filter((url): url is string => Boolean(url)),
+      origin: allowedOrigins,
       credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     },
   });
 
-  io.on('connection', (socket: Socket) => {
-    console.log('New client connected:', socket.id);
+  io.on('connection', (socket) => {
+    console.log('🟢 Socket connected:', socket.id);
 
-    socket.on('join', (userId: string) => {
-      socket.join(userId);
-      console.log(`User ${userId} joined their room`);
+    socket.on('join-task', (taskId: string) => {
+      socket.join(taskId);
+      console.log(`Socket ${socket.id} joined task ${taskId}`);
+    });
+
+    socket.on('task-updated', (data) => {
+      socket.to(data.taskId).emit('task-updated', data);
     });
 
     socket.on('disconnect', () => {
-      console.log('Client disconnected:', socket.id);
+      console.log('🔴 Socket disconnected:', socket.id);
     });
   });
 
-  return io;
-};
-
-export const getIO = (): Server => {
-  if (!io) {
-    throw new Error('Socket.io not initialized');
-  }
   return io;
 };
