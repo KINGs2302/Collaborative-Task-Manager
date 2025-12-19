@@ -9,6 +9,7 @@ export const initSocket = (server: HTTPServer) => {
     cors: {
       origin: [
         'http://localhost:3000',
+        'https://collaborative-task-manager-yvd6.vercel.app',
         process.env.FRONTEND_URL,
         process.env.FRONTEND_PROD_URL
       ].filter((url): url is string => Boolean(url)),
