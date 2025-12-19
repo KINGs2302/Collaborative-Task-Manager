@@ -2,17 +2,37 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
+import authRoutes from './modules/auth/auth.routes';
+import taskRoutes from './modules/task/task.routes';
+import userRoutes from './modules/user/user.routes';
 
 dotenv.config();
 
 const app = express();
 
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL,
-  process.env.FRONTEND_PROD_URL,
-].filter(Boolean);
+// const allowedOrigins = [
+//   process.env.FRONTEND_URL,
+//   process.env.FRONTEND_PROD_URL,
+// ].filter(Boolean);
 
+// // app.use(
+// //   cors({
+// //     origin: (origin, callback) => {
+// //       if (!origin) return callback(null, true);
+
+// //       if (allowedOrigins.includes(origin)) {
+// //         return callback(null, true);
+// //       }
+
+// //       console.error('❌ Blocked by CORS:', origin);
+// //       return callback(null, false);
+// //     },
+// //     credentials: true,
+// //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+// //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+// //   })
+// // );
 // app.use(
 //   cors({
 //     origin: (origin, callback) => {
@@ -20,42 +40,23 @@ const allowedOrigins = [
 
 //       if (allowedOrigins.includes(origin)) {
 //         return callback(null, true);
+//       } else {
+//         console.error(`❌ CORS Blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
+//         return callback(new Error('Not allowed by CORS'));
 //       }
-
-//       console.error('❌ Blocked by CORS:', origin);
-//       return callback(null, false);
 //     },
 //     credentials: true,
 //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 //   })
 // );
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        console.error(`❌ CORS Blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
-        return callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-import authRoutes from './modules/auth/auth.routes';
-import taskRoutes from './modules/task/task.routes';
-import userRoutes from './modules/user/user.routes';
+
 
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
