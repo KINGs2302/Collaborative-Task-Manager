@@ -13,6 +13,23 @@ const allowedOrigins = [
   process.env.FRONTEND_PROD_URL,
 ].filter(Boolean);
 
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       if (!origin) return callback(null, true);
+
+//       if (allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
+
+//       console.error('❌ Blocked by CORS:', origin);
+//       return callback(null, false);
+//     },
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+//   })
+// );
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -20,10 +37,10 @@ app.use(
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
+      } else {
+        console.error(`❌ CORS Blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
+        return callback(new Error('Not allowed by CORS'));
       }
-
-      console.error('❌ Blocked by CORS:', origin);
-      return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

@@ -1,7 +1,6 @@
 import http from 'http';
 import { Server } from 'socket.io';
 import app from './app';
-// Restart trigger
 import dotenv from 'dotenv';
 import { initSocket } from './socket/socket';
 import { connectDB } from './config/db';

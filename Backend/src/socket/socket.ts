@@ -9,20 +9,20 @@ const allowedOrigins = [
 ].filter((origin): origin is string => Boolean(origin));
 
 export const initSocket = (server: http.Server) => {
-  // io = new Server(server, {
-  //   cors: {
-  //     origin: allowedOrigins,
-  //     credentials: true,
-  //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  //   },
-  // });
   io = new Server(server, {
     cors: {
-      origin: '*',
+      origin: allowedOrigins,
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     },
   });
+  // io = new Server(server, {
+  //   cors: {
+  //     origin: '*',
+  //     credentials: true,
+  //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  //   },
+  // });
 
   io.on('connection', (socket) => {
     console.log('🟢 Socket connected:', socket.id);
