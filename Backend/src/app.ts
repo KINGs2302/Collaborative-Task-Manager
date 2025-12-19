@@ -10,46 +10,19 @@ dotenv.config();
 
 const app = express();
 
+app.use(
+  cors({
+    origin: [
+      'http://localhost:3000',
+      'https://collaborative-task-manager-yvd6.vercel.app',
+      process.env.FRONTEND_URL,
+      process.env.FRONTEND_PROD_URL
+    ].filter((url): url is string => Boolean(url)),
+    credentials: true,
+  })
+);
 
-// const allowedOrigins = [
-//   process.env.FRONTEND_URL,
-//   process.env.FRONTEND_PROD_URL,
-// ].filter(Boolean);
 
-// // app.use(
-// //   cors({
-// //     origin: (origin, callback) => {
-// //       if (!origin) return callback(null, true);
-
-// //       if (allowedOrigins.includes(origin)) {
-// //         return callback(null, true);
-// //       }
-
-// //       console.error('❌ Blocked by CORS:', origin);
-// //       return callback(null, false);
-// //     },
-// //     credentials: true,
-// //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-// //     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-// //   })
-// // );
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin) return callback(null, true);
-
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, true);
-//       } else {
-//         console.error(`❌ CORS Blocked: ${origin}. Allowed: ${allowedOrigins.join(', ')}`);
-//         return callback(new Error('Not allowed by CORS'));
-//       }
-//     },
-//     credentials: true,
-//     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-//   })
-// );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -57,7 +30,9 @@ app.use(cookieParser());
 
 
 
-
+app.get("/", (req, res) => {
+  res.json({ status: "Backend running" });
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
