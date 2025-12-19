@@ -17,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -48,19 +48,10 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await login(data.email, data.password);
-      toast({
-        title: 'Success',
-        description: 'Logged in successfully',
-      });
-
-      // ✅ SINGLE redirect (no loop)
-      router.replace('/dashboard');
+      toast.success('Logged in successfully');
+      window.location.href = '/dashboard';
     } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error?.response?.data?.message || 'Failed to login',
-        variant: 'destructive',
-      });
+      toast.error(error?.response?.data?.message || 'Failed to login');
     } finally {
       setIsLoading(false);
     }
