@@ -13,7 +13,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://collaborative-task-manager-nme4.onrender.com",
+  "https://collaborative-task-manager-yvd6.vercel.app",
   process.env.FRONTEND_URL,
   process.env.FRONTEND_PROD_URL,
 ].filter(Boolean);

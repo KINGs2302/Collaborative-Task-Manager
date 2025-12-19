@@ -4,7 +4,7 @@ import http from 'http';
 let io: Server;
 
 const allowedOrigins = [
-  "https://collaborative-task-manager-nme4.onrender.com",
+  "https://collaborative-task-manager-yvd6.vercel.app",
   "http://localhost:3000",
   process.env.FRONTEND_URL,        
   process.env.FRONTEND_PROD_URL,   
