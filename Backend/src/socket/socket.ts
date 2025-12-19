@@ -4,6 +4,8 @@ import http from 'http';
 let io: Server;
 
 const allowedOrigins = [
+  "https://collaborative-task-manager-nme4.onrender.com",
+  "http://localhost:3000",
   process.env.FRONTEND_URL,        
   process.env.FRONTEND_PROD_URL,   
 ].filter((origin): origin is string => Boolean(origin));
