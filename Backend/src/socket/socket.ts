@@ -9,9 +9,16 @@ const allowedOrigins = [
 ].filter((origin): origin is string => Boolean(origin));
 
 export const initSocket = (server: http.Server) => {
+  // io = new Server(server, {
+  //   cors: {
+  //     origin: allowedOrigins,
+  //     credentials: true,
+  //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  //   },
+  // });
   io = new Server(server, {
     cors: {
-      origin: allowedOrigins,
+      origin: '*',
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     },
