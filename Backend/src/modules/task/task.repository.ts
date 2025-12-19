@@ -1,6 +1,5 @@
 // src/modules/task/task.repository.ts
 import { prisma } from '../../config/prisma';
-import { Priority, Status } from '@prisma/client';
 
 interface TaskFilters {
   status?: string;
@@ -36,8 +35,8 @@ export class TaskRepository {
           { assignedToId: userId },
           { creatorId: userId },
         ],
-        ...(status && { status: status as Status }),
-        ...(priority && { priority: priority as Priority }),
+        ...(status && { status }),
+        ...(priority && { priority }),
       },
       orderBy: sortBy
         ? { [sortBy]: sortOrder || 'asc' }

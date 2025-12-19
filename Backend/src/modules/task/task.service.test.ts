@@ -43,8 +43,11 @@ describe('TaskService', () => {
     it('should create a task and emit socket event when assigned', async () => {
       const taskData = {
         title: 'New Task',
+        description: 'Test description',
         assignedToId: 'user2',
         dueDate: '2025-01-01',
+        priority: 'Medium' as const,
+        status: 'To Do' as const,
       };
       const createdTask = { ...taskData, id: 'task1', creatorId: 'user1' };
 
@@ -63,12 +66,26 @@ describe('TaskService', () => {
 
     it('should throw error if title is too long', async () => {
       const longTitle = 'a'.repeat(101);
-      await expect(createTask('user1', { title: longTitle }))
+      const taskData = {
+        title: longTitle,
+        description: 'Test',
+        dueDate: '2025-01-01',
+        priority: 'Medium' as const,
+        status: 'To Do' as const,
+      };
+      await expect(createTask('user1', taskData))
         .rejects.toThrow('Invalid task title');
     });
 
     it('should throw error if title is missing', async () => {
-      await expect(createTask('user1', { title: '' }))
+      const taskData = {
+        title: '',
+        description: 'Test',
+        dueDate: '2025-01-01',
+        priority: 'Medium' as const,
+        status: 'To Do' as const,
+      };
+      await expect(createTask('user1', taskData))
         .rejects.toThrow('Invalid task title');
     });
   });

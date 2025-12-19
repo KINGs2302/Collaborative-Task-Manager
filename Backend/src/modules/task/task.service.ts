@@ -16,7 +16,7 @@ const mapStatusToFrontend = (status: string) => {
 
 export const getAllTasks = async (userId: string, filters = {}) => {
   const tasks = await repo.findAllByUser(userId, filters);
-  return tasks.map(task => ({
+  return tasks.map((task: any) => ({
     ...task,
     status: mapStatusToFrontend(task.status),
     dueDate: task.dueDate.toISOString()
@@ -129,7 +129,7 @@ export const deleteTask = async (id: string, userId: string) => {
 
 export const dashboard = async (userId: string) => {
   const tasks = await repo.findDashboardTasks(userId);
-  return tasks.map(task => ({
+  return tasks.map((task: any) => ({
     ...task,
     status: mapStatusToFrontend(task.status),
     dueDate: task.dueDate.toISOString()
