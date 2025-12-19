@@ -9,37 +9,38 @@ const app = express();
 
 
 const allowedOrigins = [
-  process.env.FRONTEND_URL,        
-  process.env.FRONTEND_PROD_URL,   
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_PROD_URL,
 ].filter(Boolean);
 
-// app.use(
-//   cors({
-//     origin: (origin, callback) => {
-//       if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
 
-//       if (allowedOrigins.includes(origin)) {
-//         return callback(null, true);
-//       }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-//       console.error('❌ Blocked by CORS:', origin);
-//       return callback(new Error('Not allowed by CORS'));
-//     },
-//     credentials: true,
-//     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-//   })
-// );
-app.use(cors({}));
+      console.error('❌ Blocked by CORS:', origin);
+      return callback(null, false);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+import authRoutes from './modules/auth/auth.routes';
 import taskRoutes from './modules/task/task.routes';
 import userRoutes from './modules/user/user.routes';
 
+app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 
