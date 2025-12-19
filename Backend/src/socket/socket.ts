@@ -1,13 +1,15 @@
 import { Server } from 'socket.io';
 import http from 'http';
 
+let io: Server;
+
 const allowedOrigins = [
   process.env.FRONTEND_URL,        
   process.env.FRONTEND_PROD_URL,   
 ].filter((origin): origin is string => Boolean(origin));
 
 export const initSocket = (server: http.Server) => {
-  const io = new Server(server, {
+  io = new Server(server, {
     cors: {
       origin: allowedOrigins,
       credentials: true,
@@ -32,5 +34,12 @@ export const initSocket = (server: http.Server) => {
     });
   });
 
+  return io;
+};
+
+export const getIO = (): Server => {
+  if (!io) {
+    throw new Error('Socket.io not initialized');
+  }
   return io;
 };
