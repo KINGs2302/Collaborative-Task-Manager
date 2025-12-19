@@ -4,7 +4,7 @@ import http from 'http';
 const allowedOrigins = [
   process.env.FRONTEND_URL,        
   process.env.FRONTEND_PROD_URL,   
-].filter(Boolean);
+].filter((origin): origin is string => Boolean(origin));
 
 export const initSocket = (server: http.Server) => {
   const io = new Server(server, {
