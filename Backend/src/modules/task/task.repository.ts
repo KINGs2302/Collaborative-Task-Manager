@@ -1,4 +1,3 @@
-// src/modules/task/task.repository.ts
 import { prisma } from '../../config/prisma';
 
 interface TaskFilters {
@@ -27,19 +26,20 @@ export class TaskRepository {
   }
 
   findAllByUser(userId: string, filters: TaskFilters = {}) {
-    const { status, priority, sortBy, sortOrder } = filters;
+    const whereClause: any = {
+      OR: [
+        { assignedToId: userId },
+        { creatorId: userId },
+      ],
+    };
+
+    if (filters.status) whereClause.status = filters.status;
+    if (filters.priority) whereClause.priority = filters.priority;
 
     return prisma.task.findMany({
-      where: {
-        OR: [
-          { assignedToId: userId },
-          { creatorId: userId },
-        ],
-        ...(status && { status }),
-        ...(priority && { priority }),
-      },
-      orderBy: sortBy
-        ? { [sortBy]: sortOrder || 'asc' }
+      where: whereClause,
+      orderBy: filters.sortBy
+        ? { [filters.sortBy]: filters.sortOrder || 'asc' }
         : { dueDate: 'asc' },
     });
   }
