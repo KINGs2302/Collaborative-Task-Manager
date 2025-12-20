@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+const API_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000').replace(/\/$/, '');
 
 export const api = axios.create({
   baseURL: `${API_URL}/api`,
@@ -39,7 +39,7 @@ export const authAPI = {
 
 // User API
 export const userAPI = {
-  getProfile: () => api.get('/users/me',{ withCredentials: true}),
+  getProfile: () => api.get('/users/me'),
   updateProfile: (data: { name?: string; email?: string }) =>
     api.put('/users/me', data),
   getAllUsers: () => api.get('/users'),

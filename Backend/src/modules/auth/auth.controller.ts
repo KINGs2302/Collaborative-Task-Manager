@@ -8,7 +8,7 @@ export const register = async (req: Request, res: Response) => {
     const result = await registerUser(data);
 
     res
-      .cookie('token', result.token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' })
+      .cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000, })
       .status(201)
       .json(result.user);
   } catch (error: any) {
@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response) => {
     const result = await loginUser(data);
 
     res
-      .cookie('token', result.token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' })
+      .cookie('token', result.token, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000, })
       .status(200)
       .json(result.user);
   } catch (error: any) {
@@ -33,7 +33,7 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   try {
     res
-      .clearCookie('token')
+      .clearCookie('token', { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000, })
       .status(200)
       .json({ message: 'Logged out successfully' });
   } catch (error: any) {

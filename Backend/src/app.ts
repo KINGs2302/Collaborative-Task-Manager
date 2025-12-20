@@ -9,11 +9,11 @@ import userRoutes from './modules/user/user.routes';
 dotenv.config();
 
 const app = express();
-
+app.set('trust proxy', 1);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://collaborative-task-manager-yvd6.vercel.app",
+  "https://collaborative-task-manager-nme4.onrender.com",
   process.env.FRONTEND_URL,
   process.env.FRONTEND_PROD_URL,
 ].filter(Boolean);
