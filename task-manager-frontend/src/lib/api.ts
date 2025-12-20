@@ -53,3 +53,10 @@ export const taskAPI = {
   updateTask: (id: string, data: any) => api.put(`/tasks/${id}`, data),
   deleteTask: (id: string) => api.delete(`/tasks/${id}`),
 };
+
+// Notification API
+export const notificationAPI = {
+  getNotifications: () => api.get('/notifications'),
+  markAsRead: (id: string) => api.put(`/notifications/${id}/read`),
+  clearAll: () => api.delete('/notifications'),
+};

@@ -1,6 +1,7 @@
 import { TaskRepository } from './task.repository';
 import { getIO } from '../../socket/socket';
 import { CreateTaskDTO, UpdateTaskDTO } from './task.schema';
+import * as notificationService from '../notification/notification.service';
 
 const repo = new TaskRepository();
 
@@ -48,6 +49,12 @@ export const createTask = async (userId: string, data: CreateTaskDTO) => {
   };
 
   if (data.assignedToId && data.assignedToId !== userId) {
+    await notificationService.createNotification({
+      userId: data.assignedToId,
+      type: 'taskAssigned',
+      message: `You have been assigned to: ${task.title}`,
+      taskId: task.id,
+    });
     getIO().to(data.assignedToId).emit('taskAssigned', { task: taskWithMappedStatus, updatedBy: userId });
   }
 
@@ -89,15 +96,33 @@ export const updateTask = async (id: string, data: UpdateTaskDTO, userId?: strin
 
   // Notify assigned user if different from updater
   if (task.assignedToId && task.assignedToId !== userId) {
+    await notificationService.createNotification({
+      userId: task.assignedToId,
+      type: 'taskUpdated',
+      message: `Task updated: ${task.title}`,
+      taskId: task.id,
+    });
     getIO().to(task.assignedToId).emit('taskUpdated', { task: taskWithMappedStatus, updatedBy: userId });
   }
   // Notify creator if different from updater and not the assigned user
   if (task.creatorId && task.creatorId !== userId && task.creatorId !== task.assignedToId) {
+    await notificationService.createNotification({
+      userId: task.creatorId,
+      type: 'taskUpdated',
+      message: `Task updated: ${task.title}`,
+      taskId: task.id,
+    });
     getIO().to(task.creatorId).emit('taskUpdated', { task: taskWithMappedStatus, updatedBy: userId });
   }
   
   // If assignment changed, notify the newly assigned user
   if (data.assignedToId && data.assignedToId !== userId && data.assignedToId !== task.assignedToId) {
+    await notificationService.createNotification({
+      userId: data.assignedToId,
+      type: 'taskAssigned',
+      message: `You have been assigned to: ${task.title}`,
+      taskId: task.id,
+    });
     getIO().to(data.assignedToId).emit('taskAssigned', { task: taskWithMappedStatus, updatedBy: userId });
   }
   
@@ -123,6 +148,15 @@ export const deleteTask = async (id: string, userId: string) => {
     status: mapStatusToFrontend(task.status),
     dueDate: task.dueDate.toISOString()
   };
+  
+  if (task.assignedToId && task.assignedToId !== userId) {
+    await notificationService.createNotification({
+      userId: task.assignedToId,
+      type: 'taskDeleted',
+      message: `Task deleted: ${task.title}`,
+      taskId: task.id,
+    });
+  }
   
   getIO().emit('taskDeleted', { task: taskWithMappedStatus, deletedBy: userId });
 };

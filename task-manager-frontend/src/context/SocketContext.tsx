@@ -6,6 +6,7 @@ import { initSocket, disconnectSocket } from '@/lib/socket';
 import { Task, Notification } from '@/types';
 import { useAuth } from './AuthContext';
 import { toast } from 'sonner';
+import { notificationAPI } from '@/lib/api';
 
 interface SocketContextType {
   socket: Socket | null;
@@ -20,6 +21,25 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [socket, setSocket] = useState<Socket | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { user } = useAuth();
+
+  // Load persistent notifications on mount
+  useEffect(() => {
+    if (user) {
+      loadNotifications();
+    }
+  }, [user]);
+
+  const loadNotifications = async () => {
+    try {
+      const response = await notificationAPI.getNotifications();
+      setNotifications(response.data.map((n: any) => ({
+        ...n,
+        timestamp: new Date(n.createdAt),
+      })));
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -113,14 +133,24 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   }, [user]);
 
-  const markNotificationRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
-    );
+  const markNotificationRead = async (id: string) => {
+    try {
+      await notificationAPI.markAsRead(id);
+      setNotifications((prev) =>
+        prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
+      );
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
   };
 
-  const clearNotifications = () => {
-    setNotifications([]);
+  const clearNotifications = async () => {
+    try {
+      await notificationAPI.clearAll();
+      setNotifications([]);
+    } catch (error) {
+      console.error('Failed to clear notifications:', error);
+    }
   };
 
   return (

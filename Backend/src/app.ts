@@ -1,10 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoutes from './modules/auth/auth.routes';
 import taskRoutes from './modules/task/task.routes';
 import userRoutes from './modules/user/user.routes';
+import notificationRoutes from './modules/notification/notification.routes';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.set('trust proxy', 1);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://collaborative-task-manager-yvd6.vercel.app/",
+  "https://collaborative-task-manager-yvd6.vercel.app",
   process.env.FRONTEND_URL,
   process.env.FRONTEND_PROD_URL,
 ].filter(Boolean);
@@ -67,6 +68,7 @@ app.get("/", (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'OK' });
